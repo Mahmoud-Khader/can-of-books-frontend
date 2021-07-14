@@ -48,16 +48,17 @@ class MyFavoriteBooks extends React.Component {
       email: user.email
 
     }
+    console.log('aaaaaaaaaaaaaaaaaaaaaaa',bodydata)
     const addbook = await axios.post(`http://localhost:3001/addbook`, bodydata)
     console.log('POST IS WORKING', addbook.data)
     console.log('POST IS WORKING', addbook)
     console.log('POST IS WORKING', this.state.bookName)
     this.setState({
       bookData: addbook.data,
-      bookName: event.target.value,
-      bookDescription: event.target.value,
-      bookStatus: event.target.value,
-      bookImg: event.target.value
+      // bookName: event.target.value,
+      // bookDescription: event.target.value,
+      // bookStatus: event.target.value,
+      // bookImg: event.target.value
       
 
     })
