@@ -30,7 +30,7 @@ class MyFavoriteBooks extends React.Component {
     const { user } = this.props.auth0;
     console.log(user);
 
-    const bookData = await axios.get(`http://localhost:3001/books?email=${user.email}`);
+    const bookData = await axios.get(`${process.env.REACT_APP_SERVER}/books?email=${user.email}`);
     console.log('IT WORKS', bookData.data[0].books);
 
     this.setState({
@@ -53,7 +53,7 @@ class MyFavoriteBooks extends React.Component {
 
     }
     console.log('aaaaaaaaaaaaaaaaaaaaaaa', bodydata)
-    const addbook = await axios.post(`http://localhost:3001/addbook`, bodydata)
+    const addbook = await axios.post(`${process.env.REACT_APP_SERVER}/addbook`, bodydata)
     console.log('POST IS WORKING', addbook.data)
     console.log('POST IS WORKING', addbook)
     console.log('POST IS WORKING', this.state.bookName)
@@ -127,7 +127,7 @@ handleClose = () => {
     }
     console.log('aaaaaaaaaaaaaaaaaaaaaaa', queryParams)
     console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbb', this.state.index)
-    await axios.delete(`http://localhost:3001/deletebook/${index}`, { params: queryParams })
+    await axios.delete(`${process.env.REACT_APP_SERVER}/deletebook/${index}`, { params: queryParams })
   };
 
   updateBook = async (event) => {
@@ -144,7 +144,7 @@ handleClose = () => {
     }
     console.log('aaaaaaaaaaaaaaaaaaaaaaa', updateData)
     console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbb', this.state.index)
-    let bookUpdateData = await axios.put(`http://localhost:3001/updateBook/${this.state.index}`, updateData)
+    let bookUpdateData = await axios.put(`${process.env.REACT_APP_SERVER}/updateBook/${this.state.index}`, updateData)
     console.log('llllllllllllllllllllllllllllll', bookUpdateData)
     this.setState({
       bookData: bookUpdateData.data,
