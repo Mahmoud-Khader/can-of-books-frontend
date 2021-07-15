@@ -10,7 +10,7 @@ ReactDOM.render(
     redirectUri={window.location.origin}
   
   >
-    {console.log(process.env.REACT_APP_DOMAIN)}
+    {/* {console.log(process.env.REACT_APP_DOMAIN)} */}
     <App />
   </Auth0Provider>,
   document.getElementById("root")
