@@ -4,8 +4,9 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import './BestBooks.css';
 import { withAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
-import { Card,Button } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import BookFormModal from './component/BookFormModal';
+import UpdateFormModel from './component/UpdateFormModel';
 
 
 class MyFavoriteBooks extends React.Component {
@@ -19,6 +20,9 @@ class MyFavoriteBooks extends React.Component {
       bookDescription: '',
       bookStatus: '',
       bookImg: '',
+      index: 0,
+      
+      showModel:false
     };
   }
 
@@ -48,7 +52,7 @@ class MyFavoriteBooks extends React.Component {
       email: user.email
 
     }
-    console.log('aaaaaaaaaaaaaaaaaaaaaaa',bodydata)
+    console.log('aaaaaaaaaaaaaaaaaaaaaaa', bodydata)
     const addbook = await axios.post(`http://localhost:3001/addbook`, bodydata)
     console.log('POST IS WORKING', addbook.data)
     console.log('POST IS WORKING', addbook)
@@ -59,7 +63,7 @@ class MyFavoriteBooks extends React.Component {
       // bookDescription: event.target.value,
       // bookStatus: event.target.value,
       // bookImg: event.target.value
-      
+
 
     })
   }
@@ -85,25 +89,73 @@ class MyFavoriteBooks extends React.Component {
       bookImg: event.target.value
     })
   }
+///////////////////////////////////////////////////////
+
+
+  handleShow = (index) => {
+    this.setState({
+        showModel: true,
+        index:index,
+      bookName:this.state.bookData[index].name,
+      bookDescription:this.state.bookData[index].description,
+      bookStatus:this.state.bookData[index].status,
+      bookImg:this.state.bookData[index].email,
+    })
+}
+
+handleClose = () => {
+    this.setState({
+        showModel: false
+    })
+}
 
 
 
-  deleteBook=async(index)=>{
-    const newArrbook=this.state.bookData.filter((bok,idx)=>{
+
+  deleteBook = async (index) => {
+    const newArrbook = this.state.bookData.filter((bok, idx) => {
       return idx !== index;
     })
     console.log(newArrbook);
     this.setState({
-      bookData:newArrbook
+      bookData: newArrbook
     })
-  
+
     const { user } = this.props.auth0;
-  const queryParams={
-    email:user.email
-  }
-  await axios.delete(`http://localhost:3001/books/${index}`,{params:queryParams})
+    const queryParams = {
+      email: user.email
+    }
+    console.log('aaaaaaaaaaaaaaaaaaaaaaa', queryParams)
+    console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbb', this.state.index)
+    await axios.delete(`http://localhost:3001/deletebook/${index}`, { params: queryParams })
   };
 
+  updateBook = async (event) => {
+    event.preventDefault();
+
+    const { user } = this.props.auth0;
+    const updateData = {
+      name: event.target.name.value,
+      description: event.target.description.value,
+      status: event.target.status.value,
+      img: event.target.img.value,
+      email: user.email
+
+    }
+    console.log('aaaaaaaaaaaaaaaaaaaaaaa', updateData)
+    console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbb', this.state.index)
+    let bookUpdateData = await axios.put(`http://localhost:3001/updateBook/${this.state.index}`, updateData)
+    console.log('llllllllllllllllllllllllllllll', bookUpdateData)
+    this.setState({
+      bookData: bookUpdateData.data,
+      // index:event
+      
+    })
+    this.componentDidMount();
+
+  }
+
+  
 
   render() {
 
@@ -126,7 +178,7 @@ class MyFavoriteBooks extends React.Component {
         <div >
           {
             this.state.showBooks &&
-            this.state.bookData.map((book,index) => {
+            this.state.bookData.map((book, index) => {
 
 
               return (
@@ -143,7 +195,11 @@ class MyFavoriteBooks extends React.Component {
                       {book.status}
                     </Card.Text>
                   </Card.Body>
-                  <Button variant="danger" onClick ={()=> this.deleteBook(index)}>Delete</Button>
+                  <Button variant="danger" onClick={() => this.deleteBook(index)}>Delete</Button>
+                  <br></br>
+                  <Button variant="warning" onClick ={()=> this.handleShow(index)}>Update</Button>
+                  
+                  <UpdateFormModel showModel={this.state.showModel} handleShow={this.handleShow} handleClose={this.handleClose} updateBook={this.updateBook}  bookData={this.state.bookData} />
                 </Card>
               )
 
